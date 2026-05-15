@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Francesca Auteri - Personal Trainer</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #e63946; --bg-dark: #000000; --card-bg: rgba(26, 26, 46, 0.85); }
+        body { background-color: var(--bg-dark); color: white; font-family: 'DM Sans', sans-serif; margin: 0; overflow-x: hidden; }
+        body::before {
+            content: ''; position: fixed; inset: -50px; z-index: 0; pointer-events: none;
+            background-image: url('https://img.magnific.com/vettori-premium/seamless-vector-pattern-of-playful-black-cats_127090-2037.jpg');
+            background-repeat: repeat; background-size: 230px 230px; opacity: 0.12;
+        }
+        .glass-effect { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid rgba(230, 57, 70, 0.2); }
+        .day-active { background: linear-gradient(135deg, var(--primary), #b91c1c); transform: translateY(-2px); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-card { animation: slideUp 0.4s ease forwards; }
+    </style>
+</head>
+<body>
+    <div class="relative z-10 min-h-screen flex flex-col">
+        <header class="text-center pt-16 pb-10 px-6">
+            <h3 class="text-xs font-bold tracking-[0.3em] uppercase mb-4" style="color: var(--primary);">Istruttrice Yoga • Bodyweight • Tango</h3>
+            <h1 class="text-5xl md:text-6xl font-bold mb-6" style="font-family: 'Playfair Display', serif;">Francesca Auteri</h1>
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-[#1a1a2e] border border-white/10">
+                <i data-lucide="flame" class="w-4 h-4" style="color: var(--primary);"></i>
+                <span class="text-[10px] font-bold tracking-widest uppercase opacity-80">Personal Trainer & Wellness Coach</span>
+            </div>
+        </header>
+        <nav class="flex justify-center gap-3 px-4 flex-wrap mb-10" id="day-nav"></nav>
+        <main class="px-4 pb-20 w-full max-w-2xl mx-auto">
+            <div id="schedule-content" class="glass-effect rounded-[40px] p-8 md:p-10"></div>
+        </main>
+    </div>
+    <script>
+        const CONFIG = {
+            days: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+            schedule: {
+                2: { name: "Martedì", items: [{ time: "07:00", title: "Yoga", desc: "60 min", icon: "feather" }, { time: "12:30", title: "Pilates", desc: "45 min", icon: "target" }] },
+                3: { name: "Mercoledì", items: [{ time: "07:00", title: "Yoga", desc: "60 min", icon: "feather" }, { time: "09:15", title: "Full Body", desc: "45 min", icon: "activity" }] },
+                4: { name: "Giovedì", items: [{ time: "07:00", title: "Pilates", desc: "60 min", icon: "target" }, { time: "14:15", title: "Yoga", desc: "45 min", icon: "feather" }] },
+                5: { name: "Venerdì", items: [{ time: "08:00", title: "Pilates", desc: "60 min", icon: "target" }] }
+            }
+        };
+        let activeDay = new Date().getDay();
+        if (!CONFIG.schedule[activeDay]) activeDay = 2;
+        function updateView(day) {
+            activeDay = day;
+            document.getElementById('day-nav').innerHTML = CONFIG.days.slice(1).map((name, i) => {
+                const dIdx = i + 1;
+                return `<button onclick="updateView(${dIdx})" class="px-6 py-3 rounded-2xl text-xs font-bold ${dIdx === activeDay ? 'day-active text-white' : 'bg-[#1a1a2e] text-white/50'}">${name}</button>`;
+            }).join('');
+            const data = CONFIG.schedule[day];
+            const container = document.getElementById('schedule-content');
+            if (!data) {
+                container.innerHTML = `<div class="text-center py-16"><h2>Nessuna lezione</h2></div>`;
+            } else {
+                container.innerHTML = `<h2 class="text-4xl font-bold mb-10">${data.name}</h2><div class="grid gap-5">${data.items.map(c => `<div class="animate-card flex items-center gap-6 p-6 rounded-3xl bg-white/5 border border-white/5"><div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-500/10"><i data-lucide="${c.icon}" class="w-6 h-6 text-red-500"></i></div><div><span class="text-xs font-bold text-red-500">${c.time}</span><h4 class="text-lg font-bold">${c.title}</h4><p class="text-sm text-white/40">${c.desc}</p></div></div>`).join('')}</div>`;
+            }
+            lucide.createIcons();
+        }
+        updateView(activeDay);
+    </script>
+</body>
+</html>
